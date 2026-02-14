@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database Configuration
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-DATABASE_NAME = os.getenv("DATABASE_NAME", "tax_portal")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://mahendarfcl_db_user:BLiNOgqwIY9IpjKD@cluster0.0t1cob5.mongodb.net")
+DATABASE_NAME = os.getenv("DATABASE_NAME", "taxemploy")
 
 # API Configuration
 API_TITLE = " API"

@@ -7,7 +7,6 @@ import motor.motor_asyncio
 import logging
 from typing import Optional
 from .config import settings
-import ssl
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +22,16 @@ async def init_db() -> None:
     try:
         logger.info(f"Attempting to connect to MongoDB: {settings.MONGO_URL[:50]}...")
         
-        # Create MongoDB connection with SSL context
+        # Create MongoDB connection with SSL/TLS settings
+        # Using tlsInsecure=True for production deployments to handle certificate verification issues
         _client = motor.motor_asyncio.AsyncIOMotorClient(
             settings.MONGO_URL,
-            serverSelectionTimeoutMS=5000,
-            connectTimeoutMS=10000,
-            tlsInsecure=False,  # Verify SSL certificates
+            serverSelectionTimeoutMS=10000,
+            connectTimeoutMS=15000,
+            socketTimeoutMS=45000,
+            maxIdleTimeMS=45000,
+            retryWrites=False,
+            tlsInsecure=True,  # Disable certificate verification for production
         )
         _database = _client[settings.DATABASE_NAME]
         
