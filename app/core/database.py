@@ -7,6 +7,7 @@ import motor.motor_asyncio
 import logging
 from typing import Optional
 from .config import settings
+import ssl
 
 logger = logging.getLogger(__name__)
 
@@ -20,17 +21,27 @@ async def init_db() -> None:
     global _client, _database
     
     try:
-        _client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGO_URL)
+        logger.info(f"Attempting to connect to MongoDB: {settings.MONGO_URL[:50]}...")
+        
+        # Create MongoDB connection with SSL context
+        _client = motor.motor_asyncio.AsyncIOMotorClient(
+            settings.MONGO_URL,
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=10000,
+            tlsInsecure=False,  # Verify SSL certificates
+        )
         _database = _client[settings.DATABASE_NAME]
         
-        # Verify connection
-        await _client.admin.command('ping')
+        # Verify connection - use async/await properly
+        logger.info("Verifying MongoDB connection...")
+        await _database.command('ping')
         logger.info(f"Database connection successful: {settings.DATABASE_NAME}")
         
         # Initialize indexes
         await init_indexes()
     except Exception as e:
         logger.error(f"Failed to initialize database: {str(e)}")
+        logger.error(f"MongoDB URL: {settings.MONGO_URL[:100]}")
         raise
 
 
@@ -61,8 +72,8 @@ async def ping_db() -> bool:
         bool: True if connected, False otherwise
     """
     try:
-        if _client:
-            await _client.admin.command('ping')
+        if _database:
+            await _database.command('ping')
             return True
         return False
     except Exception as e:

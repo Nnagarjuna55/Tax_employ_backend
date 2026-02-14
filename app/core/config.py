@@ -45,7 +45,17 @@ class Settings:
     APP_DESCRIPTION: str = "Smart tax solutions & compliance platform"
     
     # Database Configuration
-    MONGO_URL: str = os.getenv("MONGO_URL", "mongodb://localhost:27017/tax")
+    @staticmethod
+    def _get_mongo_url() -> str:
+        """Get MongoDB URL with SSL parameters for Atlas connections"""
+        url = os.getenv("MONGO_URL", "mongodb://localhost:27017/tax")
+        # Add SSL parameters for MongoDB Atlas connections if not already present
+        if "mongodb.net" in url and "ssl=" not in url and "tls=" not in url:
+            separator = "&" if "?" in url else "?"
+            url = f"{url}{separator}tls=true&retryWrites=false&w=majority&serverSelectionTimeoutMS=5000"
+        return url
+    
+    MONGO_URL: str = _get_mongo_url()
     # Prefer explicit DATABASE_NAME env var; otherwise derive from MONGO_URL if present
     _derived_db = _parse_db_from_mongo_url(os.getenv("MONGO_URL"))
     DATABASE_NAME: str = os.getenv("DATABASE_NAME") or _derived_db or "tax_portal"
