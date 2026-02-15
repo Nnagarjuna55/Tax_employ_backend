@@ -14,7 +14,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter(prefix="", tags=["Authentication"])
 
 # Simple token storage (in production, use JWT or session management)
 SECRET_KEY = "-secret-key-change-in-production"

@@ -72,9 +72,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
+    max_age=3600,
 )
 
 
@@ -106,7 +107,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Include API routers
 app.include_router(
     auth.router,
-    prefix=settings.API_PREFIX,
+    prefix="/api/auth",  # ← Change this
     tags=["Authentication"]
 )
 app.include_router(

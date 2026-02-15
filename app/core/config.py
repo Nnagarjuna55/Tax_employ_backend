@@ -76,6 +76,7 @@ class Settings:
         "http://127.0.0.1:3000",
         "https://taxemployee.com",
         "https://www.taxemployee.com",
+        "https://api.taxemployee.com",  # Add API domain for CORS
     ]
     CORS_ORIGINS: List[str] = ALLOWED_HOSTS + [FRONTEND_URL]
     
