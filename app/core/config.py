@@ -73,6 +73,8 @@ class Settings:
         "http://localhost:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
+        "https://taxemployee.com",
+        "https://www.taxemployee.com",
     ]
     CORS_ORIGINS: List[str] = ALLOWED_HOSTS + [FRONTEND_URL]
     
