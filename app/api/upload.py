@@ -79,7 +79,6 @@ async def upload_image(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to upload image: {str(e)}"
-            detail="Failed to upload image to cloud storage"
         )
 
 

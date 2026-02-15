@@ -23,15 +23,18 @@ async def init_db() -> None:
         logger.info(f"Attempting to connect to MongoDB: {settings.MONGO_URL[:50]}...")
         
         # Create MongoDB connection with SSL/TLS settings
-        # Using tlsInsecure=True for production deployments to handle certificate verification issues
+        # mongodb+srv:// automatically enables TLS, tlsInsecure=True disables hostname verification
         _client = motor.motor_asyncio.AsyncIOMotorClient(
             settings.MONGO_URL,
-            serverSelectionTimeoutMS=10000,
+            tlsInsecure=True,  # Accept self-signed certificates and skip hostname verification
+            tlsCAFile=None,  # Don't use custom CA bundle
+            serverSelectionTimeoutMS=15000,
             connectTimeoutMS=15000,
-            socketTimeoutMS=45000,
+            socketTimeoutMS=60000,
             maxIdleTimeMS=45000,
-            retryWrites=False,
-            tlsInsecure=True,  # Disable certificate verification for production
+            retryWrites=True,
+            maxPoolSize=50,
+            minPoolSize=10,
         )
         _database = _client[settings.DATABASE_NAME]
         

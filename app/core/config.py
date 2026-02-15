@@ -47,18 +47,19 @@ class Settings:
     # Database Configuration
     @staticmethod
     def _get_mongo_url() -> str:
-        """Get MongoDB URL with SSL parameters for Atlas connections"""
-        url = os.getenv("MONGO_URL", "mongodb+srv://mahendarfcl_db_user:BLiNOgqwIY9IpjKD@cluster0.0t1cob5.mongodb.net/TaxEmployee")
-        # Add SSL parameters for MongoDB Atlas connections if not already present
+        """Get MongoDB URL with parameters for Atlas connections"""
+        url = os.getenv("MONGO_URL", "mongodb+srv://mahendarfcl_db_user:BLiNOgqwIY9IpjKD@cluster0.0t1cob5.mongodb.net/taxemployee")
+        # Add parameters for MongoDB Atlas connections if not already present
         if "mongodb.net" in url and "?" not in url:
-            # Atlas connections need specific parameters to handle certificate verification
-            url = f"{url}?retryWrites=false&w=majority&serverSelectionTimeoutMS=5000&socketTimeoutMS=45000&maxIdleTimeMS=45000"
+            # Atlas connections use SSL by default with mongodb+srv://
+            # Add retry and timeout settings
+            url = f"{url}?retryWrites=true&w=majority&serverSelectionTimeoutMS=15000&socketTimeoutMS=60000&maxIdleTimeMS=45000&connectTimeoutMS=15000"
         return url
     
     MONGO_URL: str = _get_mongo_url()
     # Prefer explicit DATABASE_NAME env var; otherwise derive from MONGO_URL if present
     _derived_db = _parse_db_from_mongo_url(os.getenv("MONGO_URL"))
-    DATABASE_NAME: str = os.getenv("DATABASE_NAME") or _derived_db or "tax_portal"
+    DATABASE_NAME: str = os.getenv("DATABASE_NAME") or _derived_db or "taxemployee"
     
     # Server Configuration
     HOST: str = os.getenv("HOST", "127.0.0.1")
