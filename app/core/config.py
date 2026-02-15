@@ -48,7 +48,7 @@ class Settings:
     @staticmethod
     def _get_mongo_url() -> str:
         """Get MongoDB URL with SSL parameters for Atlas connections"""
-        url = os.getenv("MONGO_URL", "mongodb+srv://mahendarfcl_db_user:BLiNOgqwIY9IpjKD@cluster0.0t1cob5.mongodb.net/taxemploy")
+        url = os.getenv("MONGO_URL", "mongodb+srv://mahendarfcl_db_user:BLiNOgqwIY9IpjKD@cluster0.0t1cob5.mongodb.net/TaxEmployee")
         # Add SSL parameters for MongoDB Atlas connections if not already present
         if "mongodb.net" in url and "?" not in url:
             # Atlas connections need specific parameters to handle certificate verification

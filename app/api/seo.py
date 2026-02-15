@@ -2,12 +2,12 @@
 SEO API endpoints
 Provides sitemap and robots.txt generation
 """
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 from datetime import datetime
 from ..core.database import get_content_collection, get_db
+from ..core.config import settings
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from fastapi import Depends
 
 router = APIRouter(prefix="/seo", tags=["SEO"])
 
@@ -17,7 +17,8 @@ async def generate_sitemap(db: AsyncIOMotorDatabase = Depends(get_db)):
     """
     Generate dynamic sitemap.xml with all articles
     """
-    base_url = "https://.com"
+    # Use FRONTEND_URL from settings, default to taxemployee.com
+    base_url = settings.FRONTEND_URL or "https://taxemployee.com"
     
     # Static pages
     urls = [
@@ -63,13 +64,13 @@ async def get_robots():
     """
     Generate robots.txt
     """
-    robots_content = """User-agent: *
+    robots_content = f"""User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /submit-article
 Disallow: /login
 
-Sitemap: https://.com/api/seo/sitemap.xml
+Sitemap: {base_url}/api/seo/sitemap.xml
 """
     return Response(content=robots_content, media_type="text/plain")
